@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class sensor : MonoBehaviour
 {
-    public int inside = 0;
+    private int bobs = 0;
+    private int inside = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,6 +24,10 @@ public class sensor : MonoBehaviour
         {
             inside++;
         }
+        if (col.gameObject.tag == "bob")
+        {
+            bobs++;
+        }
     }
 
     void OnTriggerExit2D(Collider2D col)
@@ -31,7 +36,17 @@ public class sensor : MonoBehaviour
         {
             inside--;
         }
+        if (col.gameObject.tag == "bob")
+        {
+            bobs--;
+        }
     }
+
+    public int getBobs()
+    {
+        return bobs;
+    }
+
     public int getInside()
     {
         return inside;

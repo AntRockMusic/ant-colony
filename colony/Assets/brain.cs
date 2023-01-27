@@ -33,7 +33,14 @@ public class brain : MonoBehaviour
 
     void forage()
     {
-        float dir = leftOrRight();
+        int l = left.getInside();
+        int r = right.getInside();
+        float dir = leftOrRight(l,r);
+        cert = l + r;
+        if (cert == 0)
+        {
+            dir = (leftOrRight(left.getBobs(), right.getBobs())*-1);
+        }
         moveSpeed = baseMoveSpeed / (cert * 2 + 1);
         turnSpeed = baseTurnSpeed / (cert + 1);
         turnAnt(dir);
@@ -63,12 +70,10 @@ public class brain : MonoBehaviour
      this function will return the a positive number if the ant is to turn left or a negative number if the ant is to turn right. 
      This is based on what is inside there sensors
          */
-    float leftOrRight()
+    float leftOrRight(int l, int r)
     {
         float x;
-        int l = left.getInside();
-        int r = right.getInside();
-        cert = l + r;
+        
         if (l < r)
         {
             x = -1;

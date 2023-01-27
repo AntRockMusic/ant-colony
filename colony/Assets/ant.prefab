@@ -54,7 +54,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 7
 --- !u!60 &7068772515424666389
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -132,7 +132,7 @@ Transform:
   - {fileID: 7068772515424666386}
   - {fileID: 7068772516049822599}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &7068772515484954379
 SpriteRenderer:
