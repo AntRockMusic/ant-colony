@@ -8,21 +8,24 @@ public class brain : MonoBehaviour
     private sensor right;
     private int baseMoveSpeed = 20;
     private float moveSpeed;                                                                        //This is a fluid variable that will contain the movement speed of the ant based on enviromental factors
-    private int turnSpeed;                                                                          //This is a fluid variable that will contain the turning speed of the ant based on enviromental factors
-    private int baseTurnSpeed = 5000;                                                               //This is the base turn speed of the ant
-    private int cert;                                                                               //This is to represent the ants certanty on where its going
-
+    private float turnSpeed;                                                                          //This is a fluid variable that will contain the turning speed of the ant based on enviromental factors
+    private int baseTurnSpeed = 200;                                                               //This is the base turn speed of the ant
+    private float cert;                                                                               //This is to represent the ants certanty on where its going
+    private enum State {Forage, FoundFood, Circle, GoTo}
 
     void Start()
     {
         left = transform.Find("leftSensor").gameObject.GetComponent<sensor>();
         right = transform.Find("rightSensor").gameObject.GetComponent<sensor>();
+        cert = 50;
     }
 
 
     void Update()
     {
-        forage();
+        
+        circle();
+        //forage();
     }
 
 
@@ -88,4 +91,26 @@ public class brain : MonoBehaviour
         }
             return x;
     }
+
+    /*
+     ############################################################### C i r c l e ###############################################################
+     this function will make an ant create a spiral around a point
+     */
+    void circle()
+    {
+        if (cert > 1)
+        {
+            moveAnt();
+            turnAnt((float)0.5);
+            cert = cert * (float)0.9991;
+            moveSpeed = baseMoveSpeed;
+            turnSpeed = baseTurnSpeed * (cert / 6 + 1);
+        }//else go to x
+        
+    }
+
+    /*
+     ############################################################### G o  T o  X ############################################################### TO DO
+     this will send an ant to a set of coordinates
+     */
 }
