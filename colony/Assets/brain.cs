@@ -4,57 +4,111 @@ using UnityEngine;
 
 public class brain : MonoBehaviour
 {
+    public GameObject bob;
     private sensor left;
     private sensor right;
-    private int baseMoveSpeed = 20;
+    private int baseMoveSpeed = 10;
     private float moveSpeed;                                                                        //This is a fluid variable that will contain the movement speed of the ant based on enviromental factors
     private float turnSpeed;                                                                          //This is a fluid variable that will contain the turning speed of the ant based on enviromental factors
     private int baseTurnSpeed = 200;                                                               //This is the base turn speed of the ant
+    private float dir;
     private float cert;                                                                               //This is to represent the ants certanty on where its going
-    private enum State {Forage, FoundFood, Circle, GoTo}
-
-    void Start()
+    private Stack currentState;                                                                     //This will be an enum storing the current event state
+    private int timer;
+    enum State
     {
+        Neutral,
+        ForageFind,
+        ForageNeutral,
+        FoundFood,
+        CircleStart,
+        Circle,
+        GoTo,
+        TurnAround
+    }
+    private void Start()
+    {
+        currentState = new Stack();
         left = transform.Find("leftSensor").gameObject.GetComponent<sensor>();
         right = transform.Find("rightSensor").gameObject.GetComponent<sensor>();
-        cert = 50;
-    }
+        currentState.Push(State.ForageFind);
+        currentState.Push(State.CircleStart);
+}
 
 
-    void Update()
+    private void Update()
     {
+        Debug.Log(currentState.Peek());
+        switch (currentState.Peek())
+        {
+            case State.ForageFind:
+                forage();
+                break;
+            case State.ForageNeutral:
+                forageNeutral();
+                break;
+            case State.CircleStart:
+                circleStart();
+                break;
+            case State.Circle:
+                circle();
+                break;
+            default:
+                break;
+        }
         
-        circle();
-        //forage();
     }
 
-
+    private void layPheromone()
+    {
+        Instantiate(bob, transform.position, Quaternion.identity);
+    }
     /*
      ############################################################### F o r a g e ###############################################################
      if the ant is in a foraging state then they will enact this algorithm
          */
 
-    void forage()
+    private void forage()
     {
         int l = left.getInside();
         int r = right.getInside();
-        float dir = leftOrRight(l,r);
+        dir = leftOrRight(l,r);
         cert = l + r;
         if (cert == 0)
         {
-            dir = (leftOrRight(left.getBobs(), right.getBobs())*-1);
+            dir = (leftOrRight(left.getBobs(), right.getBobs()) * -1);
         }
+        dir = dir * 5;
+        Debug.Log(dir);
         moveSpeed = baseMoveSpeed / (cert * 2 + 1);
         turnSpeed = baseTurnSpeed / (cert + 1);
-        turnAnt(dir);
+        turnAnt();
         moveAnt();
+        timer = 30;
+        currentState.Push(State.ForageNeutral);
+        layPheromone();
+    }
+
+    private void forageNeutral()
+    {
+        
+        if (timer == 0)
+        {
+            currentState.Pop();
+        }
+        
+        moveSpeed = baseMoveSpeed / (cert * 2 + 1);
+        turnSpeed = baseTurnSpeed / (cert + 1);
+        turnAnt();
+        moveAnt();
+        timer--;
     }
 
     /*
      ############################################################### M o v e  A n t ###############################################################
      this function will move the ant forward
          */
-    void moveAnt()
+    private void moveAnt()
     {
         transform.Translate(Vector3.up * moveSpeed * Time.deltaTime);
     }
@@ -63,7 +117,7 @@ public class brain : MonoBehaviour
      ############################################################### T u r n  A n t ###############################################################
      this function will turn the ant clock wise if dir is positive and counter clockwise if dir is negative
          */
-    void turnAnt(float dir)
+    private void turnAnt()
     {
         transform.Rotate(Vector3.forward * turnSpeed * dir * Time.deltaTime);
     }
@@ -73,7 +127,7 @@ public class brain : MonoBehaviour
      this function will return the a positive number if the ant is to turn left or a negative number if the ant is to turn right. 
      This is based on what is inside there sensors
          */
-    float leftOrRight(int l, int r)
+    private float leftOrRight(int l, int r)
     {
         float x;
         
@@ -93,19 +147,36 @@ public class brain : MonoBehaviour
     }
 
     /*
+    ############################################################### C i r c l e  S t a r t ###############################################################
+    this will start the circle state
+    */
+    private void circleStart()
+    {
+        cert = 50;
+        currentState.Pop();
+        currentState.Push(State.Circle);
+        dir = 0.5F;
+    }
+
+    /*
      ############################################################### C i r c l e ###############################################################
      this function will make an ant create a spiral around a point
      */
-    void circle()
+    private void circle()
     {
+        Debug.Log(cert);
         if (cert > 1)
         {
             moveAnt();
-            turnAnt((float)0.5);
+            turnAnt();
             cert = cert * (float)0.9991;
             moveSpeed = baseMoveSpeed;
             turnSpeed = baseTurnSpeed * (cert / 6 + 1);
-        }//else go to x
+            layPheromone();
+        }else
+        {
+            currentState.Pop();
+        }
         
     }
 
