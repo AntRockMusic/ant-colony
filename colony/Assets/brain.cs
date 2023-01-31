@@ -5,6 +5,7 @@ using UnityEngine;
 public class brain : MonoBehaviour
 {
     public GameObject bob;
+    private Rigidbody2D m_Rigidbody;
     private sensor left;
     private sensor right;
     private int baseMoveSpeed = 10;
@@ -28,6 +29,7 @@ public class brain : MonoBehaviour
     }
     private void Start()
     {
+        m_Rigidbody = GetComponent<Rigidbody2D>();
         currentState = new Stack();
         left = transform.Find("leftSensor").gameObject.GetComponent<sensor>();
         right = transform.Find("rightSensor").gameObject.GetComponent<sensor>();
@@ -110,7 +112,7 @@ public class brain : MonoBehaviour
          */
     private void moveAnt()
     {
-        transform.Translate(Vector3.up * moveSpeed * Time.deltaTime);
+        m_Rigidbody.MovePosition(transform.forward + Vector3.up * moveSpeed * Time.deltaTime);
     }
 
     /*
