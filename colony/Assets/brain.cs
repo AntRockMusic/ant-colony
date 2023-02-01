@@ -11,7 +11,7 @@ public class brain : MonoBehaviour
     private int baseMoveSpeed = 10;
     private float moveSpeed;                                                                        //This is a fluid variable that will contain the movement speed of the ant based on enviromental factors
     private float turnSpeed;                                                                          //This is a fluid variable that will contain the turning speed of the ant based on enviromental factors
-    private int baseTurnSpeed = 200;                                                               //This is the base turn speed of the ant
+    private int baseTurnSpeed = 100;                                                               //This is the base turn speed of the ant
     private float dir;
     private float cert;                                                                               //This is to represent the ants certanty on where its going
     private Stack currentState;                                                                     //This will be an enum storing the current event state
@@ -34,13 +34,12 @@ public class brain : MonoBehaviour
         left = transform.Find("leftSensor").gameObject.GetComponent<sensor>();
         right = transform.Find("rightSensor").gameObject.GetComponent<sensor>();
         currentState.Push(State.ForageFind);
-        currentState.Push(State.CircleStart);
+
 }
 
 
-    private void Update()
+    private void FixedUpdate()
     {
-        Debug.Log(currentState.Peek());
         switch (currentState.Peek())
         {
             case State.ForageFind:
@@ -86,7 +85,7 @@ public class brain : MonoBehaviour
         turnSpeed = baseTurnSpeed / (cert + 1);
         turnAnt();
         moveAnt();
-        timer = 30;
+        timer = 3;
         currentState.Push(State.ForageNeutral);
         layPheromone();
     }
@@ -112,7 +111,7 @@ public class brain : MonoBehaviour
          */
     private void moveAnt()
     {
-        m_Rigidbody.MovePosition(transform.forward + Vector3.up * moveSpeed * Time.deltaTime);
+        m_Rigidbody.AddRelativeForce(transform.forward + Vector3.up * moveSpeed * Time.deltaTime*230);
     }
 
     /*
@@ -132,16 +131,19 @@ public class brain : MonoBehaviour
     private float leftOrRight(int l, int r)
     {
         float x;
-        
+
         if (l < r)
         {
+            Debug.Log("right");
             x = -1;
         }
         else
         {
+            Debug.Log("left");
             x = 1;
         }
         if (l == r)
+            Debug.Log("eh");
         {
             x = Random.Range(-1f, 1f);
         }
@@ -154,7 +156,7 @@ public class brain : MonoBehaviour
     */
     private void circleStart()
     {
-        cert = 50;
+        cert = 10;
         currentState.Pop();
         currentState.Push(State.Circle);
         dir = 0.5F;
@@ -166,14 +168,13 @@ public class brain : MonoBehaviour
      */
     private void circle()
     {
-        Debug.Log(cert);
         if (cert > 1)
         {
             moveAnt();
             turnAnt();
-            cert = cert * (float)0.9991;
+            cert = cert * (float)0.99;
             moveSpeed = baseMoveSpeed;
-            turnSpeed = baseTurnSpeed * (cert / 6 + 1);
+            turnSpeed = baseTurnSpeed * ((cert + 1));
             layPheromone();
         }else
         {
