@@ -11,7 +11,7 @@ public class brain : MonoBehaviour
     private int baseMoveSpeed = 10;
     private float moveSpeed;                                                                        //This is a fluid variable that will contain the movement speed of the ant based on enviromental factors
     private float turnSpeed;                                                                          //This is a fluid variable that will contain the turning speed of the ant based on enviromental factors
-    private int baseTurnSpeed = 100;                                                               //This is the base turn speed of the ant
+    private int baseTurnSpeed = 150;                                                               //This is the base turn speed of the ant
     private float dir;
     private float cert;                                                                               //This is to represent the ants certanty on where its going
     private Stack currentState;                                                                     //This will be an enum storing the current event state
@@ -34,12 +34,13 @@ public class brain : MonoBehaviour
         left = transform.Find("leftSensor").gameObject.GetComponent<sensor>();
         right = transform.Find("rightSensor").gameObject.GetComponent<sensor>();
         currentState.Push(State.ForageFind);
-
+        currentState.Push(State.CircleStart);
 }
 
 
     private void FixedUpdate()
     {
+        
         switch (currentState.Peek())
         {
             case State.ForageFind:
@@ -111,7 +112,8 @@ public class brain : MonoBehaviour
          */
     private void moveAnt()
     {
-        m_Rigidbody.AddRelativeForce(transform.forward + Vector3.up * moveSpeed * Time.deltaTime*230);
+        m_Rigidbody.velocity = Vector2.zero;
+        m_Rigidbody.AddRelativeForce(transform.forward + Vector3.up * moveSpeed * Time.deltaTime*2000);
     }
 
     /*
@@ -120,7 +122,8 @@ public class brain : MonoBehaviour
          */
     private void turnAnt()
     {
-        m_Rigidbody.AddTorque(transform.up * turnSpeed * dir * Time.deltaTime);
+        m_Rigidbody.angularVelocity = 0;
+        m_Rigidbody.AddTorque(turnSpeed * dir * 0.05f);
     }
 
     /*

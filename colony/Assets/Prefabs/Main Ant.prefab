@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2839001659991345835}
   - component: {fileID: 2839001659991345828}
   m_Layer: 0
-  m_Name: ant (91) 1
+  m_Name: Main Ant
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
