@@ -26,7 +26,10 @@ public class sensor : MonoBehaviour
         }
         if (col.gameObject.tag == "bob")
         {
+            
             bobs++;
+            Debug.Log("bob in");
+            Debug.Log(bobs);
         }
     }
 
@@ -39,6 +42,8 @@ public class sensor : MonoBehaviour
         if (col.gameObject.tag == "bob")
         {
             bobs--;
+            Debug.Log("bob out");
+            Debug.Log(bobs);
         }
     }
 

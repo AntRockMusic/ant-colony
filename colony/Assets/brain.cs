@@ -78,15 +78,15 @@ public class brain : MonoBehaviour
         if (cert == 0)
         {
             dir = (leftOrRight(left.getBobs(), right.getBobs()) * -1);
+            timer = 1;
+            currentState.Push(State.ForageNeutral);
         }
         dir = dir * 5;
-        Debug.Log(dir);
         moveSpeed = baseMoveSpeed / (cert * 2 + 1);
         turnSpeed = baseTurnSpeed / (cert + 1);
         turnAnt();
         moveAnt();
-        timer = 3;
-        currentState.Push(State.ForageNeutral);
+        
         layPheromone();
     }
 
@@ -120,7 +120,7 @@ public class brain : MonoBehaviour
          */
     private void turnAnt()
     {
-        transform.Rotate(Vector3.forward * turnSpeed * dir * Time.deltaTime);
+        m_Rigidbody.AddTorque(transform.up * turnSpeed * dir * Time.deltaTime);
     }
 
     /*
@@ -134,16 +134,16 @@ public class brain : MonoBehaviour
 
         if (l < r)
         {
-            Debug.Log("right");
+            //Debug.Log("right");
             x = -1;
         }
         else
         {
-            Debug.Log("left");
+            //Debug.Log("left");
             x = 1;
         }
         if (l == r)
-            Debug.Log("eh");
+            //Debug.Log("eh");
         {
             x = Random.Range(-1f, 1f);
         }
