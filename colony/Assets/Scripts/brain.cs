@@ -13,7 +13,8 @@ public class brain : MonoBehaviour
     private float turnSpeed;                                                                          //This is a fluid variable that will contain the turning speed of the ant based on enviromental factors
     private int baseTurnSpeed = 150;                                                               //This is the base turn speed of the ant
     private float dir;
-    private float cert;                                                                               //This is to represent the ants certanty on where its going
+    private float cert;                                                                              //This is to represent the ants certanty on where its going
+    private float tempCert;                                                                         //This is to save the previous states certenty in the case of a change in state mid way
     private Stack currentState;                                                                     //This will be an enum storing the current event state
     private int timer;
     enum State
@@ -25,16 +26,22 @@ public class brain : MonoBehaviour
         CircleStart,
         Circle,
         GoTo,
+        TurnAroundStart,
         TurnAround
     }
     private void Start()
     {
         m_Rigidbody = GetComponent<Rigidbody2D>();
         currentState = new Stack();
+        moveSpeed = baseMoveSpeed;
+        turnSpeed = baseTurnSpeed;
         left = transform.Find("leftSensor").gameObject.GetComponent<sensor>();
         right = transform.Find("rightSensor").gameObject.GetComponent<sensor>();
-        currentState.Push(State.ForageFind);
-        currentState.Push(State.CircleStart);
+        //currentState.Push(State.ForageFind);
+        //currentState.Push(State.CircleStart);
+        currentState.Push(State.Neutral);
+        currentState.Push(State.TurnAroundStart);
+        
 }
 
 
@@ -54,6 +61,12 @@ public class brain : MonoBehaviour
                 break;
             case State.Circle:
                 circle();
+                break;
+            case State.TurnAroundStart:
+                turnAroundStart();
+                break;
+            case State.TurnAround:
+                turnAround();
                 break;
             default:
                 break;
@@ -123,9 +136,15 @@ public class brain : MonoBehaviour
     private void turnAnt()
     {
         m_Rigidbody.angularVelocity = 0;
+        Debug.Log(turnSpeed * dir * 0.05f);
         m_Rigidbody.AddTorque(turnSpeed * dir * 0.05f);
     }
 
+    private void stopAnt()
+    {
+        m_Rigidbody.velocity = Vector2.zero;
+        m_Rigidbody.angularVelocity = 0;
+    }
     /*
      ############################################################### L e f t  O r  R i g h t ###############################################################
      this function will return the a positive number if the ant is to turn left or a negative number if the ant is to turn right. 
@@ -184,6 +203,44 @@ public class brain : MonoBehaviour
             currentState.Pop();
         }
         
+    }
+
+
+    /*
+     ############################################################### T u r n  A r o u n d  S t a r t ############################################################### 
+     */
+     private void turnAroundStart()
+    {
+        
+        if (cert == -1)
+        {
+            cert = 0;
+            stopAnt();
+            currentState.Pop();
+        }
+        else
+        {
+            turnSpeed = baseTurnSpeed;
+            dir = 2;
+            cert = 32;
+            currentState.Push(State.TurnAround);
+        }
+        
+    }
+
+    /*
+    ############################################################### T u r n  A r o u n d ###############################################################
+     */
+
+    private void turnAround()
+    {
+        turnAnt();
+        cert--;
+        Debug.Log("turn");
+        if (cert == 0) {
+            cert--;
+            currentState.Pop();
+        }
     }
 
     /*
