@@ -40,8 +40,12 @@ public class brain : MonoBehaviour
         right = transform.Find("rightSensor").gameObject.GetComponent<sensor>();
         //currentState.Push(State.ForageFind);
         //currentState.Push(State.CircleStart);
+<<<<<<< HEAD
         //currentState.Push(State.Neutral);
         //currentState.Push(State.TurnAroundStart);
+=======
+        currentState.Push(State.Neutral);
+>>>>>>> 4ba441abdd74a5e70ed4b45e2bf2d5046fbb69cf
         currentState.Push(State.FaceX);
         
 }
@@ -226,8 +230,8 @@ public class brain : MonoBehaviour
         else
         {
             turnSpeed = baseTurnSpeed;
-            dir = 2;
-            cert = 32;
+            dir = 4;
+            cert = 16;
             currentState.Push(State.TurnAround);
         }
         
@@ -253,6 +257,7 @@ public class brain : MonoBehaviour
      this will send an ant to a set of coordinates
      */
 
+<<<<<<< HEAD
     /*
     ############################################################### F a c e  X ############################################################### 
     */
@@ -275,4 +280,40 @@ public class brain : MonoBehaviour
         }
         turnAnt();
     }
+=======
+
+    /*
+     ############################################################### F a c e  X ############################################################### TO DO
+     this will send an ant to a set of coordinates
+     */
+    private void faceX()//https://answers.unity.com/questions/503934/chow-to-check-if-an-object-is-facing-another.html
+    {
+        float FOVAngle = 10;
+        Vector3 targetPos = Vector3.zero;
+        Vector3 direction = targetPos - transform.position;
+        float ang = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        float lookerAngle = transform.eulerAngles.z;
+        float checkAngle = 0f;
+        if (ang >= 0f)
+            checkAngle = ang - lookerAngle - 90f;
+        else if (ang < 0f)
+            checkAngle = ang - lookerAngle + 270f;
+
+        if (checkAngle < -180f)
+            checkAngle = checkAngle + 360f;
+
+        if (checkAngle <= FOVAngle * .5f)
+        {
+            dir = -1;
+        }
+        else if (checkAngle >= -FOVAngle * .5f)
+        {
+            dir = 1;
+        }
+        else
+            Debug.Log("NotFacing");
+        turnAnt();
+    }
+
+>>>>>>> 4ba441abdd74a5e70ed4b45e2bf2d5046fbb69cf
 }
