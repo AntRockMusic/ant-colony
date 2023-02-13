@@ -27,7 +27,8 @@ public class brain : MonoBehaviour
         Circle,
         GoTo,
         TurnAroundStart,
-        TurnAround
+        TurnAround,
+        FaceX
     }
     private void Start()
     {
@@ -39,8 +40,9 @@ public class brain : MonoBehaviour
         right = transform.Find("rightSensor").gameObject.GetComponent<sensor>();
         //currentState.Push(State.ForageFind);
         //currentState.Push(State.CircleStart);
-        currentState.Push(State.Neutral);
-        currentState.Push(State.TurnAroundStart);
+        //currentState.Push(State.Neutral);
+        //currentState.Push(State.TurnAroundStart);
+        currentState.Push(State.FaceX);
         
 }
 
@@ -67,6 +69,9 @@ public class brain : MonoBehaviour
                 break;
             case State.TurnAround:
                 turnAround();
+                break;
+            case State.FaceX:
+                faceX();
                 break;
             default:
                 break;
@@ -136,7 +141,7 @@ public class brain : MonoBehaviour
     private void turnAnt()
     {
         m_Rigidbody.angularVelocity = 0;
-        Debug.Log(turnSpeed * dir * 0.05f);
+        //Debug.Log(turnSpeed * dir * 0.05f);
         m_Rigidbody.AddTorque(turnSpeed * dir * 0.05f);
     }
 
@@ -247,4 +252,27 @@ public class brain : MonoBehaviour
      ############################################################### G o  T o  X ############################################################### TO DO
      this will send an ant to a set of coordinates
      */
+
+    /*
+    ############################################################### F a c e  X ############################################################### 
+    */
+    void faceX()
+    {
+        Vector3 targetPosition =  Vector3.zero;
+        targetPosition.x = targetPosition.x - transform.position.x;
+        targetPosition.y = targetPosition.y - transform.position.y;
+        float angle = Mathf.Atan2(targetPosition.y, targetPosition.x) * Mathf.Rad2Deg;
+        float anglefin = angle - (transform.eulerAngles.z);
+        Debug.Log(anglefin);
+        if (anglefin < 0)
+        {
+            anglefin = 360 + anglefin;
+        }
+        dir = -1;
+        if (anglefin > 90 && anglefin < 270)
+        {
+            dir = 1;
+        }
+        turnAnt();
+    }
 }
