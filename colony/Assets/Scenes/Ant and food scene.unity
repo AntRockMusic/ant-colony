@@ -182,6 +182,40 @@ PrefabInstance:
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: fe5e8d7e032897b47a7570adf5d81878, type: 3}
+--- !u!1 &800338489 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2839001659991345829, guid: 694b1fb9b25c3974e851c87a5e5ed8c5, type: 3}
+  m_PrefabInstance: {fileID: 8643102560784345444}
+  m_PrefabAsset: {fileID: 0}
+--- !u!60 &800338495
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 800338489}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 0.5, y: 1}
+    newSize: {x: 0.5, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: 0, y: 0}
+      - {x: 2, y: 3}
+      - {x: -2, y: 3}
+  m_UseDelaunayMesh: 0
 --- !u!1 &1510199478
 GameObject:
   m_ObjectHideFlags: 0

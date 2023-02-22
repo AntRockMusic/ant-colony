@@ -15,9 +15,11 @@ public class brain : MonoBehaviour
     private float dir;
     private float cert;                                                                              //This is to represent the ants certanty on where its going
     private float tempCert;                                                                         //This is to save the previous states certenty in the case of a change in state mid way
-    private Stack currentState;                                                                     //This will be an enum storing the current event state
+    private int bobs = 0;
+    private Stack commandStack;                                                                     //This will be an enum storing the current event state
     private int timer;
-    enum State
+    private Dictionary<string, ArrayList> methods;
+    enum Command
     {
         Neutral,
         ForageFind,
@@ -33,16 +35,16 @@ public class brain : MonoBehaviour
     private void Start()
     {
         m_Rigidbody = GetComponent<Rigidbody2D>();
-        currentState = new Stack();
+        commandStack = new Stack();
         moveSpeed = baseMoveSpeed;
         turnSpeed = baseTurnSpeed;
         left = transform.Find("leftSensor").gameObject.GetComponent<sensor>();
         right = transform.Find("rightSensor").gameObject.GetComponent<sensor>();
         //currentState.Push(State.ForageFind);
         //currentState.Push(State.CircleStart);
-        currentState.Push(State.Neutral);
+        commandStack.Push(Command.Neutral);
 
-        currentState.Push(State.FaceX);
+        commandStack.Push(Command.FaceX);
         
 }
 
@@ -50,30 +52,31 @@ public class brain : MonoBehaviour
     private void FixedUpdate()
     {
         
-        switch (currentState.Peek())
+        switch (commandStack.Peek())
         {
-            case State.ForageFind:
+            case Command.ForageFind:
                 forage();
                 break;
-            case State.ForageNeutral:
+            case Command.ForageNeutral:
                 forageNeutral();
                 break;
-            case State.CircleStart:
+            case Command.CircleStart:
                 circleStart();
                 break;
-            case State.Circle:
+            case Command.Circle:
                 circle();
                 break;
-            case State.TurnAroundStart:
+            case Command.TurnAroundStart:
                 turnAroundStart();
                 break;
-            case State.TurnAround:
+            case Command.TurnAround:
                 turnAround();
                 break;
-            case State.FaceX:
+            case Command.FaceX:
                 faceX();
                 break;
             default:
+                //methods.GetEnumerator(commendStack.peek());
                 break;
         }
         
@@ -86,19 +89,20 @@ public class brain : MonoBehaviour
     /*
      ############################################################### F o r a g e ###############################################################
      if the ant is in a foraging state then they will enact this algorithm
+      ToDo::: make the ants go in more straight lines this will be easyer for path finding
          */
 
     private void forage()
     {
         int l = left.getInside();
         int r = right.getInside();
-        dir = leftOrRight(l,r);
+        dir = forageLeftOrRight(l,r);
         cert = l + r;
         if (cert == 0)
         {
-            dir = (leftOrRight(left.getBobs(), right.getBobs()) * -1);
+            dir = (forageLeftOrRight(left.getBobs(), right.getBobs()) * -1);
             timer = 1;
-            currentState.Push(State.ForageNeutral);
+            commandStack.Push(Command.ForageNeutral);
         }
         dir = dir * 5;
         moveSpeed = baseMoveSpeed / (cert * 2 + 1);
@@ -114,7 +118,7 @@ public class brain : MonoBehaviour
         
         if (timer == 0)
         {
-            currentState.Pop();
+            commandStack.Pop();
         }
         
         moveSpeed = baseMoveSpeed / (cert * 2 + 1);
@@ -151,11 +155,11 @@ public class brain : MonoBehaviour
         m_Rigidbody.angularVelocity = 0;
     }
     /*
-     ############################################################### L e f t  O r  R i g h t ###############################################################
+     ############################################################### F o r a g e L e f t  O r  R i g h t ###############################################################
      this function will return the a positive number if the ant is to turn left or a negative number if the ant is to turn right. 
      This is based on what is inside there sensors
          */
-    private float leftOrRight(int l, int r)
+    private float forageLeftOrRight(int l, int r)
     {
         float x;
 
@@ -184,8 +188,8 @@ public class brain : MonoBehaviour
     private void circleStart()
     {
         cert = 10;
-        currentState.Pop();
-        currentState.Push(State.Circle);
+        commandStack.Pop();
+        commandStack.Push(Command.Circle);
         dir = 0.5F;
     }
 
@@ -205,7 +209,7 @@ public class brain : MonoBehaviour
             layPheromone();
         }else
         {
-            currentState.Pop();
+            commandStack.Pop();
         }
         
     }
@@ -221,14 +225,14 @@ public class brain : MonoBehaviour
         {
             cert = 0;
             stopAnt();
-            currentState.Pop();
+            commandStack.Pop();
         }
         else
         {
             turnSpeed = baseTurnSpeed;
             dir = 4;
             cert = 16;
-            currentState.Push(State.TurnAround);
+            commandStack.Push(Command.TurnAround);
         }
         
     }
@@ -244,7 +248,7 @@ public class brain : MonoBehaviour
         Debug.Log("turn");
         if (cert == 0) {
             cert--;
-            currentState.Pop();
+            commandStack.Pop();
         }
     }
 
@@ -278,6 +282,25 @@ public class brain : MonoBehaviour
     }
     */
 
+    /*
+         *  ############################################################### G e t  A n g l e  T o  P o s ###############################################################
+         *  this will return the angle between the ant and the target
+    */
+    private float getAngleToPos()
+    {
+        
+        Vector3 targetPos = Vector3.zero;
+        Vector3 direction = targetPos - transform.position;
+        float ang = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        float lookerAngle = transform.eulerAngles.z;
+        float checkAngle = 0f; 
+        if (ang >= 0f)
+            checkAngle = ang - lookerAngle - 90f;
+        else if (ang < 0f)
+            checkAngle = ang - lookerAngle + 270f;
+        return checkAngle;
+    }
+
 /*
     /*
      ############################################################### F a c e  X ############################################################### TO DO
@@ -285,18 +308,9 @@ public class brain : MonoBehaviour
     */
     private void faceX()//https://answers.unity.com/questions/503934/chow-to-check-if-an-object-is-facing-another.html
     {
-        float FOVAngle = 10;
-        Vector3 targetPos = Vector3.zero;
-        Vector3 direction = targetPos - transform.position;
-        float ang = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        float lookerAngle = transform.eulerAngles.z;
-        float checkAngle = 0f;
         bool facing = false;
-        if (ang >= 0f)
-            checkAngle = ang - lookerAngle - 90f;
-        else if (ang < 0f)
-            checkAngle = ang - lookerAngle + 270f;
-
+        float FOVAngle = 10;
+        float checkAngle = getAngleToPos();
         if (checkAngle < -180f)
             checkAngle = checkAngle + 360f;
 
@@ -311,12 +325,18 @@ public class brain : MonoBehaviour
         else if (checkAngle >= FOVAngle* 10 && checkAngle <= -FOVAngle * 10)
         {
             facing = true;
-            currentState.Pop();
+            commandStack.Pop();
         }
 
             turnAnt();
 
     }
+
+    /*
+     *  ############################################################### H a n d l e  B o b I n ###############################################################
+     *  this will handle if a Bob enters the fov
+     */
+
 
 
 
