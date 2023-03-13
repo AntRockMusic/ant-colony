@@ -19,6 +19,7 @@ public class brain : MonoBehaviour
     private Stack commandStack;                                                                     //This will be an enum storing the current event state
     private int timer;
     private Dictionary<string, ArrayList> methods;
+    private Stack whileStack;
     enum Command
     {
         Neutral,
@@ -36,6 +37,7 @@ public class brain : MonoBehaviour
     {
         m_Rigidbody = GetComponent<Rigidbody2D>();
         commandStack = new Stack();
+        whileStack = new Stack();
         moveSpeed = baseMoveSpeed;
         turnSpeed = baseTurnSpeed;
         left = transform.Find("leftSensor").gameObject.GetComponent<sensor>();
@@ -333,9 +335,15 @@ public class brain : MonoBehaviour
     }
 
     /*
+     *  ############################################################### W h i l e  S t a r t ###############################################################
+     * /
+
+    /*
      *  ############################################################### H a n d l e  B o b I n ###############################################################
      *  this will handle if a Bob enters the fov
      */
+
+
 
 
 
