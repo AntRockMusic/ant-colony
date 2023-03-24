@@ -2,6 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+/*
+ * 
+ * TODO::::::::                             We are trying to make the ant react to food and bring it home,
+ *                                          First: get the Ant to react when they collid with food stuffs
+ *                                       
+ * 
+ * /
+
+
+
+
+
 public class brain : MonoBehaviour
 {
     public GameObject bob;
@@ -44,8 +57,8 @@ public class brain : MonoBehaviour
         right = transform.Find("rightSensor").gameObject.GetComponent<sensor>();
         //currentState.Push(State.CircleStart);
         currentState.Push(State.Neutral);
-        //currentState.Push(State.ForageFind);
-        currentState.Push(State.GoTo);
+        currentState.Push(State.ForageFind);
+        //currentState.Push(State.GoTo);
 
     }
 
@@ -277,7 +290,7 @@ public class brain : MonoBehaviour
     {
         turnAnt();
         cert--;
-        Debug.Log("turn");
+        //Debug.Log("turn");
         if (cert == 0)
         {
             cert--;
@@ -302,7 +315,7 @@ public class brain : MonoBehaviour
      */
     private void moveToX()
     {
-        if ((Mathf.Abs(transform.position.x - targetPos.x) > 1) || (Mathf.Abs(transform.position.y - targetPos.y) > 1))
+        if ((Mathf.Abs(transform.position.x - targetPos.x) > 1.7f) || (Mathf.Abs(transform.position.y - targetPos.y) > 1.7f))
         {
             moveAnt();
         }
@@ -383,6 +396,13 @@ public class brain : MonoBehaviour
 
     }
 
+    void onCollisionEnter2D(Collision2D col) 
+    {
+        //if (col.gameObject.tag == "Bob")
+        //{
+            Debug.Log("oooooh yummers");
+        //}
+    }
 
 
 }
