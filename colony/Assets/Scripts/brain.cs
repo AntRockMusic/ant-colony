@@ -9,7 +9,7 @@ using UnityEngine;
  *                                          First: get the Ant to react when they collid with food stuffs
  *                                       
  * 
- * /
+ */
 
 
 
@@ -33,6 +33,7 @@ public class brain : MonoBehaviour
     private float prevDir;
     private float facing = 0;
     private Vector3 targetPos;
+    private int food = 0;
     enum State
     {
         Neutral,
@@ -304,6 +305,8 @@ public class brain : MonoBehaviour
      */
     private void GoToX()
     {
+        moveSpeed = baseMoveSpeed;
+        turnSpeed = baseTurnSpeed;
         currentState.Pop();
         currentState.Push(State.MoveToX);//Push Move X
         currentState.Push(State.FaceX);//Push Face X
@@ -396,14 +399,23 @@ public class brain : MonoBehaviour
 
     }
 
-    void onCollisionEnter2D(Collision2D col) 
+    void OnCollisionEnter2D(Collision2D collision)
     {
-        //if (col.gameObject.tag == "Bob")
-        //{
-            Debug.Log("oooooh yummers");
-        //}
+        if (currentState != null) {
+            State tempState = currentState.Peek() as State;
+        if (tempState == State.ForageFind || tempState == State.ForageNeutral)
+            {
+                if (collision.gameObject.tag == "bit")
+                {
+                    foodScript bitObj = collision.gameObject.GetComponent<foodScript>();
+                    Debug.Log("oooooh yummers");
+                    bitObj.eat();
+                    currentState.Push(State.GoTo);
+                }
+            }
+        }
     }
-
+    
 
 }
 
