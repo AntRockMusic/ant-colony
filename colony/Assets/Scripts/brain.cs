@@ -34,8 +34,12 @@ public class brain : MonoBehaviour
     private float facing = 0;
     private Vector3 targetPos;
     private int food = 0;
+    private bool atHome;
+    private float estimate = 0;
+    private Vector3 targetPosition;
     enum State
     {
+        None,
         Neutral,
         ForageFind,
         ForageNeutral,
@@ -46,7 +50,7 @@ public class brain : MonoBehaviour
         TurnAroundStart,
         TurnAround,
         FaceX,
-        MoveToX
+        MoveToX,
     }
     private void Start()
     {
@@ -305,6 +309,7 @@ public class brain : MonoBehaviour
      */
     private void GoToX()
     {
+        //getDistance
         moveSpeed = baseMoveSpeed;
         turnSpeed = baseTurnSpeed;
         currentState.Pop();
@@ -318,9 +323,12 @@ public class brain : MonoBehaviour
      */
     private void moveToX()
     {
-        if ((Mathf.Abs(transform.position.x - targetPos.x) > 1.7f) || (Mathf.Abs(transform.position.y - targetPos.y) > 1.7f))
+        //Vector2 tempPos = transform.position;
+        if (!atHome)
         {
             moveAnt();
+          //  tempPos = tempPos - transform.position;
+
         }
         else
         {
@@ -329,7 +337,12 @@ public class brain : MonoBehaviour
     }
 
 
-
+    /*
+    private float getDistance(Vector2 triangle)
+    {
+        return sqrt(triangle.x * *2 + triangle.y * *2);
+    }
+    */
 
     /*
      ############################################################### F a c e  X ###############################################################
@@ -401,22 +414,38 @@ public class brain : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (currentState != null) {
-            State tempState = currentState.Peek() as State;
-        if (tempState == State.ForageFind || tempState == State.ForageNeutral)
+
+        if (currentState.Peek().Equals(State.ForageFind) || currentState.Peek().Equals(State.ForageNeutral))
+        {
+            if (collision.gameObject.tag == "bit")
             {
-                if (collision.gameObject.tag == "bit")
-                {
-                    foodScript bitObj = collision.gameObject.GetComponent<foodScript>();
-                    Debug.Log("oooooh yummers");
-                    bitObj.eat();
-                    currentState.Push(State.GoTo);
-                }
+                foodScript bitObj = collision.gameObject.GetComponent<foodScript>();
+                Debug.Log("oooooh yummers");
+                bitObj.eat();
+                //currentState.Pop();
+                currentState.Push(State.GoTo);
+            }
+        }
+
+    }
+
+    void OnTriggerEnter2D(Collisoin2d collision)
+    {
+        if (collision.gameObject.tag == "home")
+        {
+            atHome = true;
+        }
+
+
+        void OnCollisionExit2D(Collision2D collision)
+        {
+            if (collision.gameObject.tag == "home")
+            {
+                atHome = false;
             }
         }
     }
-    
-
 }
+
 
 
