@@ -35,6 +35,7 @@ public class brain : MonoBehaviour
     private Vector3 targetPos;
     private int food = 0;
     private bool atHome;
+    private Vector2 homeLocation;
     private float estimate = 0;
     private Vector3 targetPosition;
     enum State
@@ -310,6 +311,7 @@ public class brain : MonoBehaviour
     private void GoToX()
     {
         //getDistance
+        atHome = false;
         moveSpeed = baseMoveSpeed;
         turnSpeed = baseTurnSpeed;
         currentState.Pop();
@@ -324,7 +326,7 @@ public class brain : MonoBehaviour
     private void moveToX()
     {
         //Vector2 tempPos = transform.position;
-        if (!atHome)
+        if ((Mathf.Abs(transform.position.x - targetPos.x) > 2) || (Mathf.Abs(transform.position.y - targetPos.y) > 2))
         {
             moveAnt();
           //  tempPos = tempPos - transform.position;
@@ -351,7 +353,6 @@ public class brain : MonoBehaviour
     private void faceX()//https://answers.unity.com/questions/503934/chow-to-check-if-an-object-is-facing-another.html
     {
         float FOVAngle = 10;
-        targetPos = Vector3.zero;
         Vector3 direction = targetPos - transform.position;
         float ang = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         float lookerAngle = transform.eulerAngles.z;
@@ -426,18 +427,25 @@ public class brain : MonoBehaviour
                 currentState.Push(State.GoTo);
             }
         }
+       
 
     }
 
-    void OnTriggerEnter2D(Collisoin2d collision)
+    void OnTriggerEnter2D(Collider2D collision)
     {
+        Debug.Log("collision!!!");
+        Debug.Log(collision.gameObject.tag);
+
         if (collision.gameObject.tag == "home")
         {
             atHome = true;
+            Debug.Log("Honey Im Hooooome");
+            homeLocation = collision.gameObject.transform.position;
+            targetPos = homeLocation;
         }
+    }
 
-
-        void OnCollisionExit2D(Collision2D collision)
+        void OnCollisionExit2D(Collider2D collision)
         {
             if (collision.gameObject.tag == "home")
             {
@@ -445,7 +453,7 @@ public class brain : MonoBehaviour
             }
         }
     }
-}
+
 
 
 
