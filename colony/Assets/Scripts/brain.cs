@@ -33,7 +33,7 @@ public class brain : MonoBehaviour
     private float prevDir;
     private float facing = 0;
     private Vector3 targetPos;
-    private int food = 0;
+    private int food = 1;
     private bool atHome;
     private Vector2 homeLocation;
     private float estimate = 0;
@@ -422,7 +422,7 @@ public class brain : MonoBehaviour
             {
                 foodScript bitObj = collision.gameObject.GetComponent<foodScript>();
                 Debug.Log("oooooh yummers");
-                bitObj.eat();
+                food += bitObj.eat();
                 //currentState.Pop();
                 currentState.Push(State.GoTo);
             }
@@ -431,16 +431,26 @@ public class brain : MonoBehaviour
 
     }
 
+    void depositFood(nest tempNest)
+    {
+        tempNest.takeFood(food);
+        food = 0;
+    }
+
     void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log("collision!!!");
-        Debug.Log(collision.gameObject.tag);
+       // Debug.Log("collision!!!");
+        //Debug.Log(collision.gameObject.tag);
 
         if (collision.gameObject.tag == "home")
         {
             atHome = true;
             Debug.Log("Honey Im Hooooome");
             homeLocation = collision.gameObject.transform.position;
+            if(food > 0)
+            {
+                depositFood(collision.gameObject.GetComponent<nest>());        
+            }
             targetPos = homeLocation;
         }
     }

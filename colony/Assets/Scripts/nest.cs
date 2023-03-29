@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class nest : MonoBehaviour
 {
-    private int food;
+    public GameObject ant;
+    public int food;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,12 +24,14 @@ public class nest : MonoBehaviour
 
     public void takeFood(int foodToGet)
     {
+        Debug.Log("giving food");
         food += foodToGet;
     }
 
     private void makeAnt()
     {
         Debug.Log("Make ant");
+        Instantiate(ant, transform.position, transform.rotation);
         //make an ant
     }
 
