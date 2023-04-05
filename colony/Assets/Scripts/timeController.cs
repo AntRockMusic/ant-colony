@@ -13,6 +13,12 @@ public class timeController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKey("t")){
+            Time.timeScale = Time.timeScale++;
+            Debug.Log(Time.timeScale);
+        }
+        if (Input.GetKey("g")){
+            Time.timeScale = Time.timeScale--;
+        }
     }
 }
