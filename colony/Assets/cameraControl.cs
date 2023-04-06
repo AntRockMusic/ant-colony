@@ -6,7 +6,7 @@ public class cameraControl : MonoBehaviour
 {
 public int speed;
     // Start is called before the first frame update
-    boolean shift = false;
+   // boolean shift = false;
     void Start()
     {
         
@@ -15,13 +15,13 @@ public int speed;
     // Update is called once per frame
     void Update()
     {
-    if (Input.GetKeyDown("Shift")){
-        shift = true;
-    }
-    if (Input.GetKeyUp("Shift")){
-        shift = false;
+   // if (Input.GetKeyDown("Shift")){
+    //    shift = true;
+   // }
+    //if (Input.GetKeyUp("Shift")){
+      //  shift = false;
 
-    }
+   // }
     if (Input.GetKey("="))
         {
             speed++;
