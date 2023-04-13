@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class simController : MonoBehaviour
 {
@@ -34,7 +35,7 @@ public GameObject mainCamera;
     }
 
     public void slideTime(){
-    float sliderTime = timeSlider.GetComponent<Slider>.value;
+    float sliderTime = timeSlider.GetComponent<Slider>().value;
     setTimeScale(sliderTime);
     }
 
