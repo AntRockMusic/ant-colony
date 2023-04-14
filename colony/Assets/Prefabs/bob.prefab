@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4804726914787229771}
   - component: {fileID: -2130482257801185775}
   - component: {fileID: -5646479204921616582}
+  - component: {fileID: -5715118443672169745}
   m_Layer: 6
   m_Name: bob
   m_TagString: bob
@@ -133,3 +134,15 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &-5715118443672169745
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8269322761141044820}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b7faf092a29d3942afcbc4dc5f78020, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
